@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Presentation/CafeAPI.WebApi/appsettings.json
+/Presentation/CafeAPI.WebApi/Properties/launchSettings.json
