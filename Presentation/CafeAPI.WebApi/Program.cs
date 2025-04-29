@@ -20,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(GeneralMapping));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repositoy<>));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
