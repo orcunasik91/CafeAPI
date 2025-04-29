@@ -1,4 +1,5 @@
 ﻿using CafeAPI.Application.Dtos.CategoryDtos;
+using CafeAPI.Application.Dtos.ResponseDtos;
 using CafeAPI.Application.Services.Abstracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,16 +16,23 @@ public class CategoriesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllCategories()
     {
-        var categories = await _categoryService.GetAllCategoriesAsync();
-        return Ok(categories);
+        var result = await _categoryService.GetAllCategoriesAsync();
+        if (!result.Success)
+        {
+            if(result.ErrorCodes == ErrorCodes.NotFound)
+            {
+                return Ok(result);
+            }        
+        }
+        return BadRequest(result);
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCategoryById([FromRoute(Name = "id")] int id)
     {
-        var category = await _categoryService.GetByIdCategoryAsync(id);
-        if (category is null)
+        var result = await _categoryService.GetByIdCategoryAsync(id);
+        if (result is null)
             return NotFound();
-        return Ok(category);
+        return Ok(result);
     }
     [HttpPost]
     public async Task<IActionResult> CreateOneCategory([FromBody] CreateCategoryDto categoryDto)
