@@ -5,8 +5,8 @@ namespace CafeAPI.Application.Services.Abstracts;
 public interface ICategoryService
 {
     Task<ResponseDto<List<ResultCategoryDto>>> GetAllCategoriesAsync();
-    Task<DetailCategoryDto> GetByIdCategoryAsync(int id);
-    Task AddCategoryAsync(CreateCategoryDto categoryDto);
-    Task UpdateCategoryAsync(UpdateCategoryDto categoryDto);
-    Task RemoveCategoryAsync(int id);
+    Task<ResponseDto<DetailCategoryDto>> GetByIdCategoryAsync(int id);
+    Task<ResponseDto<object>> AddCategoryAsync(CreateCategoryDto categoryDto);
+    Task<ResponseDto<object>> UpdateCategoryAsync(UpdateCategoryDto categoryDto);
+    Task<ResponseDto<object>> RemoveCategoryAsync(int id);
 }

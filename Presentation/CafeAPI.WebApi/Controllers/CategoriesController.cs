@@ -22,34 +22,53 @@ public class CategoriesController : ControllerBase
             if(result.ErrorCodes == ErrorCodes.NotFound)
             {
                 return Ok(result);
-            }        
+            }
+            return BadRequest(result);
         }
-        return BadRequest(result);
+        return Ok(result);
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCategoryById([FromRoute(Name = "id")] int id)
     {
         var result = await _categoryService.GetByIdCategoryAsync(id);
-        if (result is null)
-            return NotFound();
+        if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.NotFound)
+                return Ok(result);
+            return BadRequest(result);
+        }
         return Ok(result);
     }
     [HttpPost]
     public async Task<IActionResult> CreateOneCategory([FromBody] CreateCategoryDto categoryDto)
     {
-        await _categoryService.AddCategoryAsync(categoryDto);
-        return StatusCode(201, categoryDto);
+        var result = await _categoryService.AddCategoryAsync(categoryDto);
+        if (!result.Success)
+            return BadRequest(result);
+        return StatusCode(201, result);
     }
     [HttpPut]
     public async Task<IActionResult> UpdateOneCategory([FromBody] UpdateCategoryDto categoryDto)
     {
-        await _categoryService.UpdateCategoryAsync(categoryDto);
-        return Ok("Kategori Başarı ile Güncellendi");
+        var result = await _categoryService.UpdateCategoryAsync(categoryDto);
+        if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.NotFound)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        return StatusCode(200, result);
     }
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteOneCategory([FromRoute(Name = "id")]int id)
     {
-        await _categoryService.RemoveCategoryAsync(id);
-        return NoContent();
+        var result = await _categoryService.RemoveCategoryAsync(id);
+        if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.NotFound)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 }
