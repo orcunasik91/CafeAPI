@@ -4,21 +4,33 @@ using CafeAPI.Application.Dtos.ResponseDtos;
 using CafeAPI.Application.Interfaces;
 using CafeAPI.Application.Services.Abstracts;
 using CafeAPI.Domain.Entities;
+using FluentValidation;
 
 namespace CafeAPI.Application.Services.Concretes;
 public class CategoryService : ICategoryService
 {
     private readonly IRepository<Category> _categoryRepository;
     private readonly IMapper _mapper;
-    public CategoryService(IRepository<Category> categoryRepository, IMapper mapper)
+    private readonly IValidator<CreateCategoryDto> _createCategoryValidator;
+    private readonly IValidator<UpdateCategoryDto> _updateCategoryValidator;
+    public CategoryService(IRepository<Category> categoryRepository, IMapper mapper, IValidator<CreateCategoryDto> createCategoryValidator, IValidator<UpdateCategoryDto> updateCategoryValidator)
     {
         _categoryRepository = categoryRepository;
         _mapper = mapper;
+        _createCategoryValidator = createCategoryValidator;
+        _updateCategoryValidator = updateCategoryValidator;
     }
     public async Task<ResponseDto<object>> AddCategoryAsync(CreateCategoryDto categoryDto)
     {
         try
         {
+            var validate = await _createCategoryValidator.ValidateAsync(categoryDto);
+            if (!validate.IsValid)
+            {
+                return new ResponseDto<object> { Success = false, Data = null, 
+                    Message = string.Join(" | ",validate.Errors.Select(c => c.ErrorMessage)), 
+                    ErrorCodes = ErrorCodes.ValidationError};
+            }
             var category = _mapper.Map<Category>(categoryDto);
             await _categoryRepository.AddAsync(category);
             return new ResponseDto<object> { Success = true, Data = category, Message = $"{category.Name} başarı ile oluştruldu" };
@@ -77,6 +89,17 @@ public class CategoryService : ICategoryService
     {
         try
         {
+            var validate = await _updateCategoryValidator.ValidateAsync(categoryDto);
+            if (!validate.IsValid)
+            {
+                return new ResponseDto<object>
+                {
+                    Success = false,
+                    Data = null,
+                    Message = string.Join(" | ", validate.Errors.Select(c => c.ErrorMessage)),
+                    ErrorCodes = ErrorCodes.ValidationError
+                };
+            }
             var result = await _categoryRepository.GetByIdAsync(categoryDto.Id);
             if (result is null)
                 return new ResponseDto<object> { Success = false, Message = "Kategori Bulunamadı", ErrorCodes = ErrorCodes.NotFound };
