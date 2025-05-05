@@ -1,9 +1,12 @@
+using CafeAPI.Application.Dtos.CategoryDtos;
+using CafeAPI.Application.Dtos.MenuItemDtos;
 using CafeAPI.Application.Interfaces;
 using CafeAPI.Application.Mappings;
 using CafeAPI.Application.Services.Abstracts;
 using CafeAPI.Application.Services.Concretes;
 using CafeAPI.Persistence.Context;
 using CafeAPI.Persistence.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -18,6 +21,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     sqlOptions => sqlOptions.EnableRetryOnFailure()));
 
 builder.Services.AddAutoMapper(typeof(GeneralMapping));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateMenuItemDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateMenuItemDto>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repositoy<>));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
