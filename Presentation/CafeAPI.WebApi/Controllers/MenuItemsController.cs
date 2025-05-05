@@ -1,7 +1,6 @@
-﻿using CafeAPI.Application.Dtos.CategoryDtos;
-using CafeAPI.Application.Dtos.MenuItemDtos;
+﻿using CafeAPI.Application.Dtos.MenuItemDtos;
+using CafeAPI.Application.Dtos.ResponseDtos;
 using CafeAPI.Application.Services.Abstracts;
-using CafeAPI.Application.Services.Concretes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeAPI.WebApi.Controllers;
@@ -19,32 +18,62 @@ public class MenuItemsController : ControllerBase
     public async Task<IActionResult> GetAllMenuItems()
     {
         var result = await _menuItemService.GetAllMenuItemsAsync();
+        if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.NotFound)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
         return Ok(result);
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetMenuItemById([FromRoute(Name = "id")] int id)
     {
         var result = await _menuItemService.GetByIdMenuItemAsync(id);
-        if (result is null)
-            return NotFound();
+        if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.NotFound)
+                return Ok(result);
+            return BadRequest(result);
+        }
         return Ok(result);
     }
     [HttpPost]
     public async Task<IActionResult> CreateOneMenuItem([FromBody] CreateMenuItemDto menuItemDto)
     {
-        await _menuItemService.AddMenuItemAsync(menuItemDto);
-        return StatusCode(201, menuItemDto);
+        var result = await _menuItemService.AddMenuItemAsync(menuItemDto);
+        if (!result.Success)
+        {
+            if (result.ErrorCodes is ErrorCodes.ValidationError or ErrorCodes.NotFound)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        return StatusCode(201, result);
     }
     [HttpPut]
     public async Task<IActionResult> UpdateOneMenuItem([FromBody] UpdateMenuItemDto menuItemDto)
     {
-        await _menuItemService.UpdateMenuItemAsync(menuItemDto);
-        return Ok("MenuItem Başarı ile Güncellendi");
+        var result =await _menuItemService.UpdateMenuItemAsync(menuItemDto);
+        if (!result.Success)
+        {
+            if (result.ErrorCodes is ErrorCodes.NotFound or ErrorCodes.ValidationError)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        return StatusCode(200, result);
     }
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteOneMenuItem([FromRoute(Name = "id")] int id)
     {
-        await _menuItemService.RemoveMenuItemAsync(id);
-        return NoContent();
+        var result = await _menuItemService.RemoveMenuItemAsync(id);
+        if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.NotFound)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 }
