@@ -19,6 +19,7 @@ public class GeneralMapping : Profile
         CreateMap<MenuItem, ResultMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, UpdateMenuItemDto>().ReverseMap();
         CreateMap<MenuItem, DetailMenuItemDto>().ReverseMap();
+        CreateMap<MenuItem, MenuItemResponseDto>().ReverseMap();
         #endregion
     }
 }
