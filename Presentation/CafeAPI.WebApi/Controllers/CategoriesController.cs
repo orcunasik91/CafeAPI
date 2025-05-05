@@ -44,7 +44,11 @@ public class CategoriesController : ControllerBase
     {
         var result = await _categoryService.AddCategoryAsync(categoryDto);
         if (!result.Success)
+        {
+            if (result.ErrorCodes == ErrorCodes.ValidationError)
+                return Ok(result);
             return BadRequest(result);
+        }
         return StatusCode(201, result);
     }
     [HttpPut]
@@ -53,7 +57,7 @@ public class CategoriesController : ControllerBase
         var result = await _categoryService.UpdateCategoryAsync(categoryDto);
         if (!result.Success)
         {
-            if (result.ErrorCodes == ErrorCodes.NotFound)
+            if (result.ErrorCodes is ErrorCodes.NotFound or ErrorCodes.ValidationError)
                 return Ok(result);
             return BadRequest(result);
         }
