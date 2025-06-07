@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CafeAPI.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class CategoriesController : ControllerBase
+public class CategoriesController : BaseController
 {
     private readonly ICategoryService _categoryService;
     public CategoriesController(ICategoryService categoryService)
@@ -17,62 +17,30 @@ public class CategoriesController : ControllerBase
     public async Task<IActionResult> GetAllCategories()
     {
         var result = await _categoryService.GetAllCategoriesAsync();
-        if (!result.Success)
-        {
-            if(result.ErrorCodes == ErrorCodes.NotFound)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-        return Ok(result);
+        return CreateResponse(result);
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCategoryById([FromRoute(Name = "id")] int id)
     {
         var result = await _categoryService.GetByIdCategoryAsync(id);
-        if (!result.Success)
-        {
-            if (result.ErrorCodes == ErrorCodes.NotFound)
-                return Ok(result);
-            return BadRequest(result);
-        }
-        return Ok(result);
+        return CreateResponse(result);
     }
     [HttpPost]
     public async Task<IActionResult> CreateOneCategory([FromBody] CreateCategoryDto categoryDto)
     {
         var result = await _categoryService.AddCategoryAsync(categoryDto);
-        if (!result.Success)
-        {
-            if (result.ErrorCodes == ErrorCodes.ValidationError)
-                return Ok(result);
-            return BadRequest(result);
-        }
-        return StatusCode(201, result);
+        return CreateResponse(result);
     }
     [HttpPut]
     public async Task<IActionResult> UpdateOneCategory([FromBody] UpdateCategoryDto categoryDto)
     {
         var result = await _categoryService.UpdateCategoryAsync(categoryDto);
-        if (!result.Success)
-        {
-            if (result.ErrorCodes is ErrorCodes.NotFound or ErrorCodes.ValidationError)
-                return Ok(result);
-            return BadRequest(result);
-        }
-        return StatusCode(200, result);
+        return CreateResponse(result);
     }
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteOneCategory([FromRoute(Name = "id")]int id)
     {
         var result = await _categoryService.RemoveCategoryAsync(id);
-        if (!result.Success)
-        {
-            if (result.ErrorCodes == ErrorCodes.NotFound)
-                return Ok(result);
-            return BadRequest(result);
-        }
-        return Ok(result);
+        return CreateResponse(result);
     }
 }
