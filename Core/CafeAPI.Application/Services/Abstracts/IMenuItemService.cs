@@ -1,5 +1,4 @@
-﻿using CafeAPI.Application.Dtos.CategoryDtos;
-using CafeAPI.Application.Dtos.MenuItemDtos;
+﻿using CafeAPI.Application.Dtos.MenuItemDtos;
 using CafeAPI.Application.Dtos.ResponseDtos;
 
 namespace CafeAPI.Application.Services.Abstracts;
