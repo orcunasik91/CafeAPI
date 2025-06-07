@@ -34,14 +34,14 @@ public class MenuItemService : IMenuItemService
                     Success = false,
                     Data = null,
                     Message = string.Join(" | ", validate.Errors.Select(c => c.ErrorMessage)),
-                    ErrorCodes = ErrorCodes.ValidationError
+                    ErrorCode = ErrorCodes.ValidationError
                 };
             }
             var checkCategoryId = await _categoryRepository.GetByIdAsync(menuItemDto.CategoryId);
             if (checkCategoryId is null)
                 return new ResponseDto<MenuItemResponseDto> { Success = false, 
                     Data = null, Message = "Eklemek İstediğiniz Kategori Bulunamadı!",
-                ErrorCodes = ErrorCodes.NotFound};
+                ErrorCode = ErrorCodes.NotFound};
             var menuItem = _mapper.Map<MenuItem>(menuItemDto);
             await _menuItemRepository.AddAsync(menuItem);
             var responseDtoData = _mapper.Map<MenuItemResponseDto>(menuItem);
@@ -51,7 +51,7 @@ public class MenuItemService : IMenuItemService
         }
         catch (Exception)
         {
-            return new ResponseDto<MenuItemResponseDto> { Success = false, Message = "Bir Hata Oluştu", ErrorCodes = ErrorCodes.Exception };
+            return new ResponseDto<MenuItemResponseDto> { Success = false, Message = "Bir Hata Oluştu", ErrorCode = ErrorCodes.Exception };
         }
         
     }
@@ -62,14 +62,14 @@ public class MenuItemService : IMenuItemService
         {
             var menuItems = await _menuItemRepository.GetAllAsync();
             if(menuItems.Count == 0)
-                return new ResponseDto<List<ResultMenuItemDto>> { Success = false, Message = "Menü Bulunamadı", ErrorCodes = ErrorCodes.NotFound };
+                return new ResponseDto<List<ResultMenuItemDto>> { Success = false, Message = "Menü Bulunamadı", ErrorCode = ErrorCodes.NotFound };
             var categories = await _categoryRepository.GetAllAsync();
             var result = _mapper.Map<List<ResultMenuItemDto>>(menuItems);
             return new ResponseDto<List<ResultMenuItemDto>> { Success = true, Data = result };
         }
         catch (Exception)
         {
-            return new ResponseDto<List<ResultMenuItemDto>> { Success = false, Message = "Bir Hata Oluştu", ErrorCodes = ErrorCodes.Exception };
+            return new ResponseDto<List<ResultMenuItemDto>> { Success = false, Message = "Bir Hata Oluştu", ErrorCode = ErrorCodes.Exception };
         }
     }
 
@@ -79,14 +79,14 @@ public class MenuItemService : IMenuItemService
         {
             var menuItem = await _menuItemRepository.GetByIdAsync(id);
             if (menuItem is null)
-                return new ResponseDto<DetailMenuItemDto> { Success = false, Message = "Menü Bulunamadı", ErrorCodes = ErrorCodes.NotFound };
+                return new ResponseDto<DetailMenuItemDto> { Success = false, Message = "Menü Bulunamadı", ErrorCode = ErrorCodes.NotFound };
             var category = await _categoryRepository.GetByIdAsync(menuItem.CategoryId);
             var result = _mapper.Map<DetailMenuItemDto>(menuItem);
             return new ResponseDto<DetailMenuItemDto> { Success = true, Data = result };
         }
         catch (Exception)
         {
-            return new ResponseDto<DetailMenuItemDto> { Success = false, Message = "Bir Hata Oluştu", ErrorCodes = ErrorCodes.Exception };
+            return new ResponseDto<DetailMenuItemDto> { Success = false, Message = "Bir Hata Oluştu", ErrorCode = ErrorCodes.Exception };
         }
     }
 
@@ -96,13 +96,13 @@ public class MenuItemService : IMenuItemService
         {
             var menuItem = await _menuItemRepository.GetByIdAsync(id);
             if (menuItem is null)
-                return new ResponseDto<object> { Success = false, Message = "Menü Bulunamadı", ErrorCodes = ErrorCodes.NotFound };
+                return new ResponseDto<object> { Success = false, Message = "Menü Bulunamadı", ErrorCode = ErrorCodes.NotFound };
             await _menuItemRepository.RemoveAsync(menuItem);
             return new ResponseDto<object> { Success = true, Message = $"{menuItem.Name} isimli Menü Silindi" };
         }
         catch (Exception)
         {
-            return new ResponseDto<object> { Success = false, Message = "Bir Hata Oluştu", ErrorCodes = ErrorCodes.Exception };
+            return new ResponseDto<object> { Success = false, Message = "Bir Hata Oluştu", ErrorCode = ErrorCodes.Exception };
         }
     }
 
@@ -118,7 +118,7 @@ public class MenuItemService : IMenuItemService
                     Success = false,
                     Data = null,
                     Message = string.Join(" | ", validate.Errors.Select(c => c.ErrorMessage)),
-                    ErrorCodes = ErrorCodes.ValidationError
+                    ErrorCode = ErrorCodes.ValidationError
                 };
             }
             var checkCategoryId = await _categoryRepository.GetByIdAsync(menuItemDto.CategoryId);
@@ -128,18 +128,18 @@ public class MenuItemService : IMenuItemService
                     Success = false,
                     Data = menuItemDto,
                     Message = "Eklemek İstediğiniz Kategori Bulunamadı!",
-                    ErrorCodes = ErrorCodes.NotFound
+                    ErrorCode = ErrorCodes.NotFound
                 };
             var result = _mapper.Map<MenuItem>(menuItemDto);
             if (result is null)
-                return new ResponseDto<object> { Success = false, Message = "Menü Bulunamadı", ErrorCodes = ErrorCodes.NotFound };
+                return new ResponseDto<object> { Success = false, Message = "Menü Bulunamadı", ErrorCode = ErrorCodes.NotFound };
             await _menuItemRepository.UpdateAsync(result);
             return new ResponseDto<object> { Success = true, Message = $"{result.Name} isimli Menü başarı ile güncellendi" };
 
         }
         catch (Exception)
         {
-            return new ResponseDto<object> { Success = false, Message = "Bir Hata Oluştu", ErrorCodes = ErrorCodes.Exception };
+            return new ResponseDto<object> { Success = false, Message = "Bir Hata Oluştu", ErrorCode = ErrorCodes.Exception };
 
         }
     }
