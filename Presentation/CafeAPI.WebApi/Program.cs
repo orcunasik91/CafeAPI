@@ -1,5 +1,6 @@
 using CafeAPI.Application.Dtos.CategoryDtos;
 using CafeAPI.Application.Dtos.MenuItemDtos;
+using CafeAPI.Application.Dtos.TableDtos;
 using CafeAPI.Application.Interfaces;
 using CafeAPI.Application.Mappings;
 using CafeAPI.Application.Services.Abstracts;
@@ -25,9 +26,13 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateCategoryDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateCategoryDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateMenuItemDto>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateMenuItemDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTableDto>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateTableDto>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repositoy<>));
+builder.Services.AddScoped(typeof(ITableRepository), typeof(TableRepository));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<ITableService, TableService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
